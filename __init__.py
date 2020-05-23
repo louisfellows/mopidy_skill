@@ -21,7 +21,7 @@ def type_to_playlist_type(title_type):
         return 'artist'
     elif title_type.lower() == "the playlist":
         return 'playlist'
-    else
+    else:
         return 'generic'
 
 
@@ -145,7 +145,6 @@ class MopidySkill(CommonPlaySkill):
                      'library_type': match[3]
                      })
 
-
     def query_song(self, song):
         best_found = None
         best_conf = 0
@@ -158,7 +157,6 @@ class MopidySkill(CommonPlaySkill):
                 best_found = found
                 library_type = t
         return best_found, best_conf, 'song', library_type
-
 
     def query_artist(self, artist):
         best_found = None
@@ -195,8 +193,8 @@ class MopidySkill(CommonPlaySkill):
         This checks, albums, artists, genres and tracks.
         """
         # Check if playlist
-        #match = re.match(self.translate_regex('playlist'), phrase)
-        #if match:
+        # match = re.match(self.translate_regex('playlist'), phrase)
+        # if match:
         #    return self.query_playlist(match.groupdict()['playlist'])
 
         # Check album
