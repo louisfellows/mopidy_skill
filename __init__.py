@@ -221,6 +221,7 @@ class MopidySkill(CommonPlaySkill):
         else:
             playlists = lists[list_type][library_type]
         self.stop()
+        self.mopidy.clear_list()
         self.speak('Playing {}'.format(p))
         time.sleep(3)
         if playlists[p]['type'] == 'playlist':
@@ -234,7 +235,6 @@ class MopidySkill(CommonPlaySkill):
     def stop(self, message=None):
         self.log.info('Handling stop request')
         if self.mopidy:
-            self.mopidy.clear_list()
             self.mopidy.stop()
 
     def handle_next(self, message):
