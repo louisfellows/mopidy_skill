@@ -98,8 +98,8 @@ class MopidySkill(CommonPlaySkill):
 
         self.mopidy = self._connect()
 
-        self.register_intent_file('currently.playing', self.handle_currently_playing)
-        self.register_intent_file('add.to.playlist', self.handle_add_to_playlist)
+        self.register_intent_file('currently.playing.intent', self.handle_currently_playing)
+        self.register_intent_file('add.to.playlist.intent', self.handle_add_to_playlist)
 
     def play(self, tracks):
         self.mopidy.add_list(tracks)
