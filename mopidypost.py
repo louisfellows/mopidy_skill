@@ -14,8 +14,8 @@ class Mopidy(object):
         self.url = url + MOPIDY_API
         self.volume = None
         self.clear_list(force=True)
-        self.volume_low = 3
-        self.volume_high = 100
+        self.volume_low = 5
+        self.volume_high = 15
 
     def find_artist(self, artist):
         d = copy(_base_dict)
