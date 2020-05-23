@@ -1,0 +1,4 @@
+add {type} {title} to the tracklist
+add {type} {title} to the playlist
+queue up {type} {title}
+queue {type} {title}

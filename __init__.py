@@ -10,6 +10,21 @@ from .mopidypost import Mopidy
 NOTHING_FOUND = (None, 0.0)
 
 
+def type_to_playlist_type(title_type):
+    if title_type.lower() == "the album":
+        return 'album'
+    elif title_type.lower() == "the track":
+        return 'song'
+    elif title_type.lower() == "the artist":
+        return 'artist'
+    elif title_type.lower() == "the band":
+        return 'artist'
+    elif title_type.lower() == "the playlist":
+        return 'playlist'
+    else
+        return 'generic'
+
+
 class MopidySkill(CommonPlaySkill):
     def __init__(self):
         super(MopidySkill, self).__init__('Mopidy Skill')
@@ -83,8 +98,10 @@ class MopidySkill(CommonPlaySkill):
 
         self.mopidy = self._connect()
 
+        self.register_intent_file('currently.playing', self.handle_currently_playing)
+        self.register_intent_file('add.to.playlist', self.handle_add_to_playlist)
+
     def play(self, tracks):
-        self.mopidy.clear_list()
         self.mopidy.add_list(tracks)
         self.mopidy.play()
 
@@ -207,10 +224,14 @@ class MopidySkill(CommonPlaySkill):
             return NOTHING_FOUND
 
     def CPS_start(self, phrase, data):
+        tracks = self.get_matching_tracks(data)
+        self.mopidy.clear_list()
+        self.play(tracks)
+
+    def get_matching_tracks(self, data):
         p = data.get('playlist')
         list_type = data.get('playlist_type', 'generic')
         library_type = data.get('library_type', 'generic')
-
         lists = {'generic': self.playlist,
                  'artist': self.artists,
                  'album': self.albums,
@@ -221,16 +242,15 @@ class MopidySkill(CommonPlaySkill):
         else:
             playlists = lists[list_type][library_type]
         self.stop()
-        self.mopidy.clear_list()
         self.speak('Playing {}'.format(p))
         time.sleep(3)
         if playlists[p]['type'] == 'playlist':
             tracks = self.mopidy.get_items(playlists[p]['uri'])
-        if playlists[p]['type'] == 'track':
+        elif playlists[p]['type'] == 'track':
             tracks = playlists[p]['uri']
         else:
             tracks = self.mopidy.get_tracks(playlists[p]['uri'])
-        self.play(tracks)
+        return tracks
 
     def stop(self, message=None):
         self.log.info('Handling stop request')
@@ -274,6 +294,22 @@ class MopidySkill(CommonPlaySkill):
                 self.speak_dialog('currently_playing', data)
             time.sleep(6)
             self.mopidy.restore_volume()
+
+    def handle_add_to_playlist(self, message):
+        title = message.data.get('title')
+        title_type = message.data.get('type')
+        self.log.info(message)
+        if title is None:
+            self.speak_dialog('not_recognised')
+        else:
+            data = []
+            data['playlist'] = title
+            data['playlist_type'] = type_to_playlist_type(title_type)
+
+            tracks = self.get_matching_tracks(data)
+            self.play(tracks)
+
+            self.speak_dialog('added_to_queue', {'title', title})
 
 
 def create_skill():
