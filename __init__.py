@@ -25,7 +25,7 @@ class MopidySkill(CommonPlaySkill):
         try:
             mopidy = Mopidy(url)
         except Exception:
-            self.log.warning('Could not connect to Mopidy server')
+            self.log.warning('Could not connect to Mopidy server {}'.format(url) )
             return None
 
         self.log.info('Connected to mopidy server')
