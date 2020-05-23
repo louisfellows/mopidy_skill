@@ -1,1 +1,2 @@
 We're listening to {{current_track}} by {{artist}}.
+This is {{current_track}} by {{artist}}.
