@@ -257,7 +257,6 @@ class MopidySkill(CommonPlaySkill):
             playlists = lists[list_type][library_type]
 
         self.speak('Playing {}'.format(p))
-        # time.sleep(3)
 
         self.log.info("Searching")
         if playlists[p]['type'] == 'playlist':
@@ -271,11 +270,6 @@ class MopidySkill(CommonPlaySkill):
         self.log.info(tracks)
         tracks = shorten_playlist(tracks)
         return tracks
-
-    def stop(self, message=None):
-        self.log.info('Handling stop request')
-        if self.mopidy:
-            self.mopidy.stop()
 
     def handle_next(self, message):
         self.mopidy.next()
@@ -318,7 +312,7 @@ class MopidySkill(CommonPlaySkill):
     def handle_add_to_playlist(self, message):
         title = message.data.get('title')
         title_type = message.data.get('type')
-        self.log.info(message)
+        self.log.info(message.data)
         if title is None:
             self.speak_dialog('not_recognised')
         else:

@@ -10,7 +10,6 @@ _base_dict = {'jsonrpc': '2.0', 'id': 1, 'params': {}}
 
 class Mopidy(object):
     def __init__(self, url):
-        self.is_playing = False
         self.url = url + MOPIDY_API
         self.volume = None
         self.clear_list(force=True)
@@ -73,7 +72,7 @@ class Mopidy(object):
         else:
             return None
 
-    def clear_list(self, force=False):
+    def clear_list(self):
         d = copy(_base_dict)
         d['method'] = 'core.tracklist.clear'
         r = requests.post(self.url, headers={"content-type":"application/json"}, data=json.dumps(d), timeout=self.timeout)
@@ -92,46 +91,35 @@ class Mopidy(object):
         return r
 
     def play(self):
-        self.is_playing = True
         self.restore_volume()
         d = copy(_base_dict)
         d['method'] = 'core.playback.play'
         r = requests.post(self.url, headers={"content-type":"application/json"}, data=json.dumps(d), timeout=self.timeout)
 
     def next(self):
-        if self.is_playing:
-            d = copy(_base_dict)
-            d['method'] = 'core.playback.next'
-            r = requests.post(self.url, headers={"content-type":"application/json"}, data=json.dumps(d), timeout=self.timeout)
+        d = copy(_base_dict)
+        d['method'] = 'core.playback.next'
+        r = requests.post(self.url, headers={"content-type":"application/json"}, data=json.dumps(d), timeout=self.timeout)
 
     def previous(self):
-        if self.is_playing:
             d = copy(_base_dict)
             d['method'] = 'core.playback.previous'
             r = requests.post(self.url, headers={"content-type":"application/json"}, data=json.dumps(d), timeout=self.timeout)
 
     def stop(self):
-        if self.is_playing:
-            d = copy(_base_dict)
-            d['method'] = 'core.playback.pause'
-            r = requests.post(self.url, headers={"content-type":"application/json"}, data=json.dumps(d), timeout=self.timeout)
-            #self.is_playing = False
+        self.pause()
 
     def currently_playing(self):
-        if self.is_playing:
-            d = copy(_base_dict)
-            d['method'] = 'core.playback.get_current_track'
-            r = requests.post(self.url, headers={"content-type":"application/json"}, data=json.dumps(d), timeout=self.timeout)
-            return r.json()['result']
-        else:
-            return None
+        d = copy(_base_dict)
+        d['method'] = 'core.playback.get_current_track'
+        r = requests.post(self.url, headers={"content-type":"application/json"}, data=json.dumps(d), timeout=self.timeout)
+        return r.json()['result']
 
     def set_volume(self, percent):
-        if self.is_playing:
-            d = copy(_base_dict)
-            d['method'] = 'core.mixer.set_volume'
-            d['params'] = {'volume': percent}
-            r = requests.post(self.url, headers={"content-type":"application/json"}, data=json.dumps(d), timeout=self.timeout)
+        d = copy(_base_dict)
+        d['method'] = 'core.mixer.set_volume'
+        d['params'] = {'volume': percent}
+        r = requests.post(self.url, headers={"content-type":"application/json"}, data=json.dumps(d), timeout=self.timeout)
 
     def lower_volume(self):
         self.set_volume(self.volume_low)
@@ -140,16 +128,14 @@ class Mopidy(object):
         self.set_volume(self.volume_high)
 
     def pause(self):
-        if self.is_playing:
-            d = copy(_base_dict)
-            d['method'] = 'core.playback.pause'
-            r = requests.post(self.url, headers={"content-type":"application/json"}, data=json.dumps(d), timeout=self.timeout)
+        d = copy(_base_dict)
+        d['method'] = 'core.playback.pause'
+        r = requests.post(self.url, headers={"content-type":"application/json"}, data=json.dumps(d), timeout=self.timeout)
 
     def resume(self):
-        if self.is_playing:
-            d = copy(_base_dict)
-            d['method'] = 'core.playback.resume'
-            r = requests.post(self.url, headers={"content-type":"application/json"}, data=json.dumps(d), timeout=self.timeout)
+        d = copy(_base_dict)
+        d['method'] = 'core.playback.resume'
+        r = requests.post(self.url, headers={"content-type":"application/json"}, data=json.dumps(d), timeout=self.timeout)
 
     def get_items(self, uri):
         d = copy(_base_dict)
