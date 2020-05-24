@@ -322,9 +322,7 @@ class MopidySkill(CommonPlaySkill):
         if title is None:
             self.speak_dialog('not_recognised')
         else:
-            data = []
-            data['playlist'] = title
-            data['playlist_type'] = type_to_playlist_type(title_type)
+            data = {'playlist': title, 'playlist_type': type_to_playlist_type(title_type)}
 
             tracks = self.get_matching_tracks(data)
             self.play(tracks)
