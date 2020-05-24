@@ -103,6 +103,7 @@ class MopidySkill(CommonPlaySkill):
 
     def play(self, tracks):
         self.mopidy.add_list(tracks)
+        self.log.info("playing")
         self.mopidy.play()
 
     def translate_regex(self, regex):
@@ -224,17 +225,21 @@ class MopidySkill(CommonPlaySkill):
     def CPS_start(self, phrase, data):
         tracks = self.get_matching_tracks(data)
         self.mopidy.clear_list()
+        self.log.info("Play!")
         self.play(tracks)
 
     def get_matching_tracks(self, data):
+        self.log.info("Getting matching tracks")
         p = data.get('playlist')
         list_type = data.get('playlist_type', 'generic')
         library_type = data.get('library_type', 'generic')
+        self.log.info(data)
         lists = {'generic': self.playlist,
                  'artist': self.artists,
                  'album': self.albums,
                  'song': self.track_names
                  }
+        self.log.info("Setup Lists")
         if list_type == 'generic':
             playlists = lists[list_type]
         else:
@@ -242,12 +247,15 @@ class MopidySkill(CommonPlaySkill):
         #self.stop()
         self.speak('Playing {}'.format(p))
         time.sleep(3)
+        self.log.info("Searching")
         if playlists[p]['type'] == 'playlist':
             tracks = self.mopidy.get_items(playlists[p]['uri'])
         elif playlists[p]['type'] == 'track':
             tracks = playlists[p]['uri']
         else:
             tracks = self.mopidy.get_tracks(playlists[p]['uri'])
+        self.log.info("Returning Tracks")
+        self.log.info(tracks)
         return tracks
 
     def stop(self, message=None):
