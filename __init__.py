@@ -1,5 +1,6 @@
 import re
 import time
+import random
 from fuzzywuzzy.process import extractOne as extract_one
 
 from mycroft.skills.common_play_skill import CommonPlaySkill, CPSMatchLevel
@@ -8,6 +9,7 @@ from .mopidypost import Mopidy
 
 
 NOTHING_FOUND = (None, 0.0)
+PLAYLIST_MAX_LENGTH = 50
 
 
 def type_to_playlist_type(title_type):
@@ -23,6 +25,14 @@ def type_to_playlist_type(title_type):
         return 'playlist'
     else:
         return 'generic'
+
+
+def shorten_playlist(tracks):
+    if len(tracks) > PLAYLIST_MAX_LENGTH:
+        top = tracks[0, PLAYLIST_MAX_LENGTH*2]
+        return random.sample(top, PLAYLIST_MAX_LENGTH)
+    else:
+        return tracks
 
 
 class MopidySkill(CommonPlaySkill):
@@ -225,6 +235,7 @@ class MopidySkill(CommonPlaySkill):
 
     def CPS_start(self, phrase, data):
         tracks = self.get_matching_tracks(data)
+        self.log.info("Clear List")
         self.mopidy.clear_list()
         self.log.info("Play!")
         self.play(tracks)
@@ -257,6 +268,7 @@ class MopidySkill(CommonPlaySkill):
             tracks = self.mopidy.get_tracks(playlists[p]['uri'])
         self.log.info("Returning Tracks")
         self.log.info(tracks)
+        tracks = shorten_playlist(tracks)
         return tracks
 
     def stop(self, message=None):
