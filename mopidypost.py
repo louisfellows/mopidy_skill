@@ -113,9 +113,9 @@ class Mopidy(object):
     def stop(self):
         if self.is_playing:
             d = copy(_base_dict)
-            d['method'] = 'core.playback.stop'
+            d['method'] = 'core.playback.pause'
             r = requests.post(self.url, headers={"content-type":"application/json"}, data=json.dumps(d))
-            self.is_playing = False
+            #self.is_playing = False
 
     def currently_playing(self):
         if self.is_playing:

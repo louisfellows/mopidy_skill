@@ -239,7 +239,7 @@ class MopidySkill(CommonPlaySkill):
             playlists = lists[list_type]
         else:
             playlists = lists[list_type][library_type]
-        self.stop()
+        #self.stop()
         self.speak('Playing {}'.format(p))
         time.sleep(3)
         if playlists[p]['type'] == 'playlist':
