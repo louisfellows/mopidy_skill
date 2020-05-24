@@ -74,11 +74,10 @@ class Mopidy(object):
             return None
 
     def clear_list(self, force=False):
-        if self.is_playing or force:
-            d = copy(_base_dict)
-            d['method'] = 'core.tracklist.clear'
-            r = requests.post(self.url, headers={"content-type":"application/json"}, data=json.dumps(d), timeout=self.timeout)
-            return r
+        d = copy(_base_dict)
+        d['method'] = 'core.tracklist.clear'
+        r = requests.post(self.url, headers={"content-type":"application/json"}, data=json.dumps(d), timeout=self.timeout)
+        return r
 
     def add_list(self, uri):
         d = copy(_base_dict)

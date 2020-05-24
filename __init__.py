@@ -29,8 +29,7 @@ def type_to_playlist_type(title_type):
 
 def shorten_playlist(tracks):
     if len(tracks) > PLAYLIST_MAX_LENGTH:
-        top = tracks[0:PLAYLIST_MAX_LENGTH*2]
-        return random.sample(top, PLAYLIST_MAX_LENGTH)
+        return random.sample(tracks, PLAYLIST_MAX_LENGTH)
     else:
         return tracks
 
