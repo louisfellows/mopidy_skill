@@ -102,6 +102,7 @@ class MopidySkill(CommonPlaySkill):
         self.register_intent_file('add.to.playlist.intent', self.handle_add_to_playlist)
 
     def play(self, tracks):
+        self.log.info("Adding {} tracks".format(len(tracks)))
         self.mopidy.add_list(tracks)
         self.log.info("playing")
         self.mopidy.play()
