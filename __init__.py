@@ -29,7 +29,7 @@ def type_to_playlist_type(title_type):
 
 def shorten_playlist(tracks):
     if len(tracks) > PLAYLIST_MAX_LENGTH:
-        top = tracks[0, PLAYLIST_MAX_LENGTH*2]
+        top = tracks[0:PLAYLIST_MAX_LENGTH*2]
         return random.sample(top, PLAYLIST_MAX_LENGTH)
     else:
         return tracks
@@ -256,16 +256,18 @@ class MopidySkill(CommonPlaySkill):
             playlists = lists[list_type]
         else:
             playlists = lists[list_type][library_type]
-        #self.stop()
+
         self.speak('Playing {}'.format(p))
-        time.sleep(3)
+        # time.sleep(3)
+
         self.log.info("Searching")
         if playlists[p]['type'] == 'playlist':
-            tracks = self.mopidy.get_items(playlists[p]['uri'])
+            tracks = self.mopidy.get_tracks(playlists[p]['uri'])
         elif playlists[p]['type'] == 'track':
             tracks = playlists[p]['uri']
         else:
             tracks = self.mopidy.get_tracks(playlists[p]['uri'])
+
         self.log.info("Returning Tracks")
         self.log.info(tracks)
         tracks = shorten_playlist(tracks)
