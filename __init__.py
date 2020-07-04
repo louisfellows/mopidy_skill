@@ -1,6 +1,7 @@
 import re
 import time
 import random
+import traceback
 from fuzzywuzzy.process import extractOne as extract_one
 
 from mycroft.skills.common_play_skill import CommonPlaySkill, CPSMatchLevel
@@ -49,7 +50,8 @@ class MopidySkill(CommonPlaySkill):
         try:
             mopidy = Mopidy(url)
         except Exception as err:
-            self.log.error("Error {}".format(err))
+            self.log.error("Error: {}".format(err))
+            self.log.error(traceback.format_exc())
             self.log.warning('Could not connect to Mopidy server {}'.format(url) )
             return None
 
