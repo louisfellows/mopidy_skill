@@ -129,6 +129,9 @@ class MopidySkill(CommonPlaySkill):
         return self.regexes[regex]
 
     def CPS_match_query_phrase(self, phrase):
+
+        self.log.info(phrase)
+
         # If no mopidy connection can be detected return None
         if self.mopidy is None:
             self.mopidy = self._connect()
