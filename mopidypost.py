@@ -10,12 +10,12 @@ _base_dict = {'jsonrpc': '2.0', 'id': 1, 'params': {}}
 
 class Mopidy(object):
     def __init__(self, url):
+        self.timeout = 1
         self.url = url + MOPIDY_API
         self.volume = None
-        self.clear_list()
         self.volume_low = 5
         self.volume_high = 15
-        self.timeout = 1
+        # self.clear_list()
 
     def find_artist(self, artist):
         d = copy(_base_dict)
