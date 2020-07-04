@@ -12,7 +12,7 @@ class Mopidy(object):
     def __init__(self, url):
         self.url = url + MOPIDY_API
         self.volume = None
-        self.clear_list(force=True)
+        self.clear_list()
         self.volume_low = 5
         self.volume_high = 15
         self.timeout = 1
