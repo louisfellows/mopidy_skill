@@ -1,9 +1,12 @@
 import requests
 from copy import copy
 import json
-from mycroft.util.log import LOG
+#from mycroft.util.log import LOG
+from fuzzywuzzy.process import fuzz
 
 MOPIDY_API = '/mopidy/rpc'
+
+MATCH_PERCENTAGE = 90
 
 _base_dict = {'jsonrpc': '2.0', 'id': 1, 'params': {}}
 
@@ -16,6 +19,66 @@ class Mopidy(object):
         self.volume_low = 5
         self.volume_high = 15
         # self.clear_list()
+        
+    def search(self, artist = None, album = None, track = None):
+
+        if (artist == None and album == None and track == None):
+            return []
+
+        d = copy(_base_dict)
+        d['method'] = 'core.library.search'
+
+        d['params']['uris'] = ["gmusic:"]
+        d['params']['query'] = {}
+
+        if (artist != None):
+            d['params']['query']['artist'] = [artist]
+
+        if (album != None):
+            d['params']['query']['album'] = [album]
+
+        if (track != None):
+            d['params']['query']['track'] = [track]
+
+        print(d)
+
+        r = requests.post(self.url, headers={"content-type":"application/json"}, data=json.dumps(d), timeout=45)
+        r = r.json()
+
+        if (track != None):
+            filterList = r['result'][0]['tracks']
+            for result in filterList:
+                if (fuzz.ratio(track, result['name']) < MATCH_PERCENTAGE):
+                    continue
+
+                if (artist != None and fuzz.ratio(artist, result['artists'][0]['name']) < MATCH_PERCENTAGE):
+                    continue
+
+                if (album != None and fuzz.ratio(album, result['album']['name']) < MATCH_PERCENTAGE):
+                    continue
+                
+                return result
+
+        elif (album != None):
+            filterList = r['result'][0]['albums']
+            for result in filterList:
+                if (fuzz.ratio(album, result['name']) < MATCH_PERCENTAGE):
+                    continue
+                
+                if (artist != None and fuzz.ratio(artist, result['artists'][0]['name']) < MATCH_PERCENTAGE):
+                    continue
+
+                return result
+
+        elif (artist != None):
+            filterList = r['result'][0]['artists']
+            for result in filterList:
+                if (fuzz.ratio(artist, result['name']) < MATCH_PERCENTAGE):
+                    continue
+
+                return result
+
+        return None
 
     def find_artist(self, artist):
         d = copy(_base_dict)

@@ -57,44 +57,6 @@ class MopidySkill(CommonPlaySkill):
 
         self.log.info('Connected to mopidy server')
         self.cancel_scheduled_event('MopidyConnect')
-        self.albums = {}
-        self.artists = {}
-        self.genres = {}
-        self.playlists = {}
-        self.radios = {}
-        self.track_names = {}
-
-        self.log.info('Loading content')
-        self.albums['gmusic'] = mopidy.get_gmusic_albums()
-        self.artists['gmusic'] = mopidy.get_gmusic_artists()
-        self.genres['gmusic'] = mopidy.get_gmusic_radio()
-        self.playlists['gmusic'] = {}
-        self.track_names['gmusic'] = {}
-
-        self.albums['local'] = mopidy.get_local_albums()
-        self.artists['local'] = mopidy.get_local_artists()
-        self.genres['local'] = mopidy.get_local_genres()
-        self.playlists['local'] = mopidy.get_local_playlists()
-        self.track_names['local'] = mopidy.get_local_track_names()
-
-        self.albums['spotify'] = {}
-        self.artists['spotify'] = {}
-        self.genres['spotify'] = {}
-        self.playlists['spotify'] = mopidy.get_spotify_playlists()
-        self.track_names['spotify'] = {}
-
-        self.playlist = {}
-        for loc in ['local', 'gmusic', 'spotify']:
-            self.log.info(loc)
-            self.playlist.update(self.playlists[loc])
-            self.log.info(loc)
-            self.playlist.update(self.genres[loc])
-            self.log.info(loc)
-            self.playlist.update(self.artists[loc])
-            self.log.info(loc)
-            self.playlist.update(self.albums[loc])
-            self.log.info(loc)
-            self.playlist.update(self.track_names[loc])
 
         return mopidy
 
@@ -151,6 +113,7 @@ class MopidySkill(CommonPlaySkill):
             match_level = CPSMatchLevel.GENERIC
 
         self.log.info('Mopidy match: {}'.format(match))
+
         if match == NOTHING_FOUND:
             self.log.debug('Nothing found on mopidy')
             return None
