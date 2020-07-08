@@ -38,8 +38,8 @@ class MopidySkill(CommonPlaySkill):
         self.mopidy = None
         self.volume_is_low = False
         self.regexes = [
-            "(the artist|the group|the band|(something|anything|stuff|music|songs) (by|from)|some) (?P<artist>.+)"
-            "(the |)(song|track) (?P<track>.+) (by (?P<artist>.+)|)"
+            "(the artist|the group|the band|(something|anything|stuff|music|songs) (by|from)|some) (?P<artist>.+)",
+            "(the |)(song|track) (?P<track>.+) (by (?P<artist>.+)|)",
             "the (album|record) (?P<album>.+) (by (?P<artist>.+)|)"
         ]
 
