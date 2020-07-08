@@ -84,13 +84,18 @@ class MopidySkill(CommonPlaySkill):
 
     def CPS_match_query_phrase(self, phrase):
         for rx in self.regexes:
+            self.log.info(rx)
             match = re.match(rx, phrase)
+            self.log.info(match)
+
             if match:
                 uri = self.mopidy.search(
                     match.groupdict()['artist'],
                     match.groupdict()['album'],
                     match.groupdict()['track'],
                     )
+
+                self.log.info(uri)
 
                 if uri:
                     self.log.info('Mopidy match: {}'.format(match))

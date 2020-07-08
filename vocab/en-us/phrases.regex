@@ -1,3 +1,3 @@
-(the artist|the group|the band|(something|anything|stuff|music|songs) (by|from)) (?P<artist>.+)
+(the artist|the group|the band|(something|anything|stuff|music|songs) (by|from)|some) (?P<artist>.+)
 (the |)(song|track) (?P<track>.+) (by (?P<artist>.+)|)
 the (album|record) (?P<album>.+) (by (?P<artist>.+)|)
