@@ -37,7 +37,11 @@ class MopidySkill(CommonPlaySkill):
         super(MopidySkill, self).__init__('Mopidy Skill')
         self.mopidy = None
         self.volume_is_low = False
-        self.regexes = []
+        self.regexes = [
+            "(the artist|the group|the band|(something|anything|stuff|music|songs) (by|from)|some) (?P<artist>.+)"
+            "(the |)(song|track) (?P<track>.+) (by (?P<artist>.+)|)"
+            "the (album|record) (?P<album>.+) (by (?P<artist>.+)|)"
+        ]
 
         path = self.find_resource('phrases.regex')
         if path:
