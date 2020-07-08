@@ -95,11 +95,21 @@ class MopidySkill(CommonPlaySkill):
             self.log.info(match)
 
             if match:
-                uri = self.mopidy.search(
-                    match.groupdict()['artist'],
-                    match.groupdict()['album'],
-                    match.groupdict()['track'],
-                    )
+                artist = None
+                album = None
+                track = None
+
+                if 'artist' in match.groupdict():
+                    artist = match.groupdict()['artist']
+
+                if 'album' in match.groupdict():
+                    album = match.groupdict()['album']
+
+                if 'track' in match.groupdict():
+                    track = match.groupdict()['track']
+
+
+                uri = self.mopidy.search(artist, album, track)
 
                 self.log.info(uri)
 
@@ -107,12 +117,12 @@ class MopidySkill(CommonPlaySkill):
                     self.log.info('Mopidy match: {}'.format(match))
 
                     match_string = ""
-                    if match.groupdict()['track']:
-                        match_string = match.groupdict()['track']
-                    elif match.groupdict()['album']:
-                        match_string = match.groupdict()['album']
-                    elif match.groupdict()['artist']:
-                        match_string = match.groupdict()['artist']
+                    if track:
+                        match_string = track
+                    elif album:
+                        match_string = album
+                    elif artist:
+                        match_string = artist
 
                     self.speak('Playing {}'.format(match_string))
                     return (match_string, CPSMatchLevel.EXACT, {"uri": uri})
