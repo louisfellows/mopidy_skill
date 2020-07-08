@@ -42,6 +42,8 @@ class MopidySkill(CommonPlaySkill):
         path = self.find_resource('phrases.regex')
         if path:
             self.regexes = [line.rstrip('\n') for line in open(path)]
+        else:
+            self.log.warning("Could not find phrases.regex")
 
     def _connect(self):
         url = 'http://localhost:6680'
