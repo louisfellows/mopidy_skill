@@ -57,7 +57,7 @@ class Mopidy(object):
                 if (album != None and fuzz.ratio(album, result['album']['name']) < MATCH_PERCENTAGE):
                     continue
                 
-                return result
+                return result.uri
 
         elif (album != None):
             filterList = r['result'][0]['albums']
@@ -68,7 +68,7 @@ class Mopidy(object):
                 if (artist != None and fuzz.ratio(artist, result['artists'][0]['name']) < MATCH_PERCENTAGE):
                     continue
 
-                return result
+                return result.uri
 
         elif (artist != None):
             filterList = r['result'][0]['artists']
@@ -76,7 +76,7 @@ class Mopidy(object):
                 if (fuzz.ratio(artist, result['name']) < MATCH_PERCENTAGE):
                     continue
 
-                return result
+                return result.uri
 
         return None
 
