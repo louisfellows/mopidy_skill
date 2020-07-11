@@ -5,7 +5,7 @@ import traceback
 from fuzzywuzzy.process import extractOne as extract_one
 
 from mycroft.skills.common_play_skill import CommonPlaySkill, CPSMatchLevel
-from .mopidypost import Mopidy
+from .mopidycontroller import Mopidy
 
 NOTHING_FOUND = (None, 0.0)
 PLAYLIST_MAX_LENGTH = 50

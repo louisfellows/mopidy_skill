@@ -1,7 +1,6 @@
 import requests
 from copy import copy
 import json
-#from mycroft.util.log import LOG
 from fuzzywuzzy.process import fuzz
 
 MOPIDY_API = '/mopidy/rpc'
@@ -16,9 +15,8 @@ class Mopidy(object):
         self.timeout = 10
         self.url = url + MOPIDY_API
         self.volume = None
-        self.volume_low = 5
+        self.volume_low = 2
         self.volume_high = 15
-        # self.clear_list()
         
     def gmusic_search(self, artist = None, album = None, track = None):
 
