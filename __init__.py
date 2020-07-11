@@ -108,7 +108,7 @@ class MopidySkill(CommonPlaySkill):
                 if 'track' in match.groupdict():
                     track = match.groupdict()['track']
 
-                return (phrase, CPSMatchLevel.Generic, 
+                return (phrase, CPSMatchLevel.GENERIC, 
                     {
                         "artist": artist,
                         "album": album,
