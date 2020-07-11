@@ -108,141 +108,38 @@ class MopidySkill(CommonPlaySkill):
                 if 'track' in match.groupdict():
                     track = match.groupdict()['track']
 
+                return (phrase, CPSMatchLevel.Generic, 
+                    {
+                        "artist": artist,
+                        "album": album,
+                        "track": track
+                    })                   
 
-                uri = self.mopidy.search(artist, album, track)
-
-                self.log.info(uri)
-
-                if uri:
-                    self.log.info('Mopidy match: {}'.format(match))
-
-                    match_string = ""
-                    if track:
-                        match_string = track
-                    elif album:
-                        match_string = album
-                    elif artist:
-                        match_string = artist
-
-                    self.speak('Playing {}'.format(match_string))
-                    return (match_string, CPSMatchLevel.EXACT, {"uri": uri})
-
-        self.speak('Could not find {}'.format(phrase))
         return None
 
     def CPS_start(self, phrase, data):
-        self.log.info("Clear List")
-        self.mopidy.clear_list()
-        self.log.info("Play!")
-        self.play([data.uri])
+        # Need to do the search here, as it's too slow for the timeout in CPS_match_query_phrase
+        uri = self.mopidy.gmusic_search(data["artist"], data["album"], data["track"])
 
-    # def query_song(self, song):
-    #     best_found = None
-    #     best_conf = 0
-    #     library_type = None
-    #     for t in self.track_names:
-    #         found, conf = (extract_one(song, self.track_names[t].keys()) or
-    #                        (None, 0))
-    #         if conf > best_conf and conf > 50:
-    #             best_conf = conf
-    #             best_found = found
-    #             library_type = t
-    #     return best_found, best_conf, 'song', library_type
+        self.log.info("Found URI: {}".format(uri))
 
-    # def query_artist(self, artist):
-    #     best_found = None
-    #     best_conf = 0.0
-    #     library_type = None
-    #     for t in self.artists:
-    #         found, conf = (extract_one(artist, self.artists[t].keys()) or
-    #                        (None, 0))
-    #         if conf > best_conf and conf > 50:
-    #             best_conf = conf
-    #             best_found = found
-    #             library_type = t
-    #     return best_found, best_conf, 'artist', library_type
+        match_string = ""
+        if "track" in data:
+            match_string = data["track"]
+        elif "album" in data:
+            match_string = data["album"]
+        elif "artist" in data:
+            match_string = data["artist"]
 
-    # def query_album(self, album):
-    #     best_found = None
-    #     best_conf = 0
-    #     library_type = None
-    #     for t in self.albums:
-    #         self.log.info(self.albums[t].keys())
-    #         found, conf = (extract_one(album, self.albums[t].keys()) or
-    #                        (None, 0))
-    #         if conf > best_conf and conf > 50:
-    #             best_conf = conf
-    #             best_found = found
-    #             library_type = t
-    #     self.log.info('ALBUMS')
-    #     self.log.info((best_found, best_conf))
-    #     return best_found, best_conf, 'album', library_type
+        if uri:
+            self.speak('Playing {}'.format(match_string))
 
-    # def specific_query(self, phrase):
-    #     """Check if the request is for a specific type.
-
-    #     This checks, albums, artists, genres and tracks.
-    #     """
-    #     # Check if playlist
-    #     # match = re.match(self.translate_regex('playlist'), phrase)
-    #     # if match:
-    #     #    return self.query_playlist(match.groupdict()['playlist'])
-
-    #     # Check album
-    #     match = re.match(self.translate_regex('album'), phrase)
-    #     if match:
-    #         album = match.groupdict()['album']
-    #         return self.query_album(album)
-
-    #     # Check artist
-    #     match = re.match(self.translate_regex('artist'), phrase)
-    #     if match:
-    #         artist = match.groupdict()['artist']
-    #         return self.query_artist(artist)
-    #     match = re.match(self.translate_regex('song'), phrase)
-    #     if match:
-    #         song = match.groupdict()['track']
-    #         return self.query_song(song)
-    #     return NOTHING_FOUND
-
-    # def generic_query(self, phrase):
-    #     found, conf = extract_one(phrase, self.playlist.keys())
-    #     if conf > 50:
-    #         return found, conf, 'generic', ''
-    #     else:
-    #         return NOTHING_FOUND
-
-    # def get_matching_tracks(self, data):
-    #     self.log.info("Getting matching tracks")
-    #     p = data.get('playlist')
-    #     list_type = data.get('playlist_type', 'generic')
-    #     library_type = data.get('library_type', 'generic')
-    #     self.log.info(data)
-    #     lists = {'generic': self.playlist,
-    #              'artist': self.artists,
-    #              'album': self.albums,
-    #              'song': self.track_names
-    #              }
-    #     self.log.info("Setup Lists")
-    #     if list_type == 'generic':
-    #         playlists = lists[list_type]
-    #     else:
-    #         playlists = lists[list_type][library_type]
-
-    #     self.speak('Playing {}'.format(p))
-
-    #     self.log.info("Searching")
-    #     if playlists[p]['type'] == 'playlist':
-    #         tracks = self.mopidy.get_tracks(playlists[p]['uri'])
-    #     elif playlists[p]['type'] == 'track':
-    #         tracks = playlists[p]['uri']
-    #     else:
-    #         tracks = self.mopidy.get_tracks(playlists[p]['uri'])
-
-    #     self.log.info("Returning Tracks")
-    #     self.log.info(tracks)
-    #     tracks = shorten_playlist(tracks)
-    #     return tracks
+            self.log.info("Clear List")
+            self.mopidy.clear_list()
+            self.log.info("Play!")
+            self.play([data.uri])
+        else:
+            self.speak("Could not find {} in Mopidy".format(match_string))
 
     def handle_next(self, message):
         self.mopidy.next()

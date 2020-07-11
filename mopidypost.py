@@ -20,7 +20,7 @@ class Mopidy(object):
         self.volume_high = 15
         # self.clear_list()
         
-    def search(self, artist = None, album = None, track = None):
+    def gmusic_search(self, artist = None, album = None, track = None):
 
         if (artist == None and album == None and track == None):
             return []
